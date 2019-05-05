@@ -86,18 +86,20 @@ public class Alien {
      * @param homePlanet
      */
     private Alien(String name, AlienType type, String homePlanet) throws AlienException{
-        if (!checkLength(name) || !checkLength(homePlanet)) {
-            throw new AlienException("Name and home planet cannot be over 50 characters");
-        }
+        checkLength(name);
+        checkLength(homePlanet);
         this.name = name;
         this.type = type;
         this.homePlanet = homePlanet;
     }
 
-    // No setters - immutable
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) throws AlienException {
+        checkLength(name);
+        this.name = name;
     }
 
     public AlienType getType() {
@@ -106,6 +108,11 @@ public class Alien {
 
     public String getHomePlanet() {
         return homePlanet;
+    }
+
+    public void setHomePlanet(String homePlanet) throws AlienException {
+        checkLength(homePlanet);
+        this.homePlanet = homePlanet;
     }
 
     public Alien getParent() {
@@ -182,12 +189,12 @@ public class Alien {
      *
      * @param string
      * @return
+     * @throws AlienException
      */
-    private boolean checkLength(String string) {
+    private void checkLength(String string) throws AlienException {
         if (string.length() > 50) {
-            return false;
+            throw new AlienException("Name and home planet cannot be over 50 characters");
         }
-        return true;
     }
 
     /**

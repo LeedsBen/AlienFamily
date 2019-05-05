@@ -49,30 +49,51 @@ public class AlienTest {
     }
 
     /**
-     * Test to check name and home planet can't be over 50 characters
+     * Test to check name can't be over 50 characters
      */
     @Test
-    public void stringLengthTest() {
+    public void nameLengthTest() {
         AlienException ace = assertThrows(AlienException.class, () -> {
             Alien adam = Alien.initialise("Adam with a super long name that is actually way way way over the limit and more than the permitted fifty characters", AlienType.ALPHA, "Omicron");
         });
         assertEquals("Name and home planet cannot be over 50 characters", ace.getMessage());
+
         AlienException ace2 = assertThrows(AlienException.class, () -> {
             Alien adam = Alien.initialise("Adam", AlienType.ALPHA, "Omicron");
             adam.addChild("Vexorg the destroyer of worlds and devourer of sworn enemies", AlienType.ALPHA, "Omicron");
 
         });
         assertEquals("Name and home planet cannot be over 50 characters", ace2.getMessage());
+
         AlienException ace3 = assertThrows(AlienException.class, () -> {
-            Alien adam = Alien.initialise("Adam", AlienType.ALPHA, "Omicron the home of the Adam, the God Alien and destroyer of Worlds, father of Vexorg the Magnificent");
+            Alien adam = Alien.initialise("Adam", AlienType.ALPHA, "Omicron");
+            adam.setName("Adam with a super long name that is actually way way way over the limit and more than the permitted fifty characters");
         });
         assertEquals("Name and home planet cannot be over 50 characters", ace3.getMessage());
-        AlienException ace4 = assertThrows(AlienException.class, () -> {
+    }
+
+    /**
+     * Test to check home planet can't be over 50 characters
+     */
+    @Test
+    public void homePlanetLengthTest() {
+        AlienException ace = assertThrows(AlienException.class, () -> {
+            Alien adam = Alien.initialise("Adam", AlienType.ALPHA, "Omicron the home of the Adam, the God Alien and destroyer of Worlds, father of Vexorg the Magnificent");
+        });
+        assertEquals("Name and home planet cannot be over 50 characters", ace.getMessage());
+
+        AlienException ace2 = assertThrows(AlienException.class, () -> {
             Alien adam = Alien.initialise("Adam", AlienType.ALPHA, "Omicron the home of the Vexorg the Magnificent, son of Adam destroyer of Worlds");
             adam.addChild("Vexorg", AlienType.ALPHA, "Omicron");
 
         });
-        assertEquals("Name and home planet cannot be over 50 characters", ace4.getMessage());
+        assertEquals("Name and home planet cannot be over 50 characters", ace2.getMessage());
+
+        AlienException ace3 = assertThrows(AlienException.class, () -> {
+            Alien adam2 = Alien.initialise("Adam", AlienType.ALPHA, "Omicron");
+            adam2.setHomePlanet("Omicron the home of the Adam, the God Alien and destroyer of Worlds, father of Vexorg the Magnificent");
+        });
+        assertEquals("Name and home planet cannot be over 50 characters", ace3.getMessage());
     }
 
     /**
