@@ -1,11 +1,9 @@
 package com.example.alienfamily.alien;
 
-import com.example.alienfamily.exception.AlienChildException;
+import com.example.alienfamily.exception.AlienException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Object class to represent an alien being.
@@ -27,7 +25,7 @@ public class Alien {
     /**
      * Home planet, max 50 chars
      */
-    private Optional<String> homePlanet;
+    private String homePlanet;
 
     /**
      * The parent of this alien.
@@ -62,10 +60,10 @@ public class Alien {
 
     /**
      * Constructor - throws exception, use initialise
-     * @throws AlienChildException
+     * @throws AlienException
      */
-    public Alien() throws AlienChildException {
-        throw new AlienChildException("Aliens cannot appear out of the ether!");
+    public Alien() throws AlienException {
+        throw new AlienException("Aliens cannot appear out of the ether!");
     }
 
     /**
@@ -76,52 +74,46 @@ public class Alien {
      * @param homePlanet
      * @return
      */
-    public static Alien initialise(String name, AlienType type, Optional<String> homePlanet) {
+    public static Alien initialise(String name, AlienType type, String homePlanet) throws AlienException {
         return new Alien(name, type, homePlanet);
     }
 
     /**
-     * private constructor for creating very first alien
+     * private constructor for creating aliens through initialise and addChild
      *
      * @param name
      * @param type
      * @param homePlanet
      */
-    private Alien(String name, AlienType type, Optional<String> homePlanet) {
+    private Alien(String name, AlienType type, String homePlanet) throws AlienException{
+        if (!checkLength(name) || !checkLength(homePlanet)) {
+            throw new AlienException("Name and home planet cannot be over 50 characters");
+        }
         this.name = name;
         this.type = type;
         this.homePlanet = homePlanet;
     }
 
+    // No setters - immutable
+
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public AlienType getType() {
         return type;
     }
 
-    public void setType(AlienType type) {
-        this.type = type;
-    }
-
-    public Optional<String> getHomePlanet() {
+    public String getHomePlanet() {
         return homePlanet;
-    }
-
-    public void setHomePlanet(Optional<String> homePlanet) {
-        this.homePlanet = homePlanet;
     }
 
     public Alien getParent() {
         return parent;
     }
 
-    public void setParent(Alien parent) {
+    // Private for immutability
+    private void setParent(Alien parent) {
         this.parent = parent;
     }
 
@@ -131,11 +123,11 @@ public class Alien {
      * Returns all children or an empty list
      *
      * @return
-     * @throws AlienChildException - if this alien is not an alpha
+     * @throws AlienException - if this alien is not an alpha
      */
-    public List<Alien> getChildren() throws AlienChildException{
+    public List<Alien> getChildren() throws AlienException {
         if (!AlienType.ALPHA.equals(this.type)) {
-            throw new AlienChildException("Only alphas have children");
+            throw new AlienException("Only alphas have children");
         }
         List<Alien> children = new ArrayList<>();
         if (this.childOne != null) {
@@ -159,12 +151,12 @@ public class Alien {
      * @param name
      * @param type
      * @param homePlanet
-     * @throws AlienChildException
+     * @throws AlienException
      */
-    public void addChild(String name, AlienType type, Optional<String> homePlanet) throws AlienChildException {
+    public void addChild(String name, AlienType type, String homePlanet) throws AlienException {
         if (!AlienType.ALPHA.equals(this.type)) {
             // Not an alpha, can't have children
-            throw new AlienChildException("Only Alpha aliens can reproduce. " + this.name + " is of type " + this.type);
+            throw new AlienException("Only Alpha aliens can reproduce. " + this.name + " is of type " + this.type);
         }
 
         Alien child = new Alien(name, type, homePlanet);
@@ -179,8 +171,23 @@ public class Alien {
             hasChildTwo = true;
         } else {
             // This alien has already had two children
-            throw new AlienChildException("Alien " + this.name + " has already had two children");
+            throw new AlienException("Alien " + this.name + " has already had two children");
         }
+    }
+
+    /**
+     * Simple method to check length.
+     *
+     * Actually less code than using javax.validation.constraints
+     *
+     * @param string
+     * @return
+     */
+    private boolean checkLength(String string) {
+        if (string.length() > 50) {
+            return false;
+        }
+        return true;
     }
 
     /**
