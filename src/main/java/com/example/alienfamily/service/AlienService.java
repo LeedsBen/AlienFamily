@@ -3,6 +3,7 @@ package com.example.alienfamily.service;
 import com.example.alienfamily.alien.Alien;
 import com.example.alienfamily.alien.AlienType;
 import com.example.alienfamily.exception.AlienException;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  * Models a colony of Aliens and CRUD operations to support it
  *
  */
+@Service
 public class AlienService {
 
     /**
