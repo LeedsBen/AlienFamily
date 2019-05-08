@@ -3,6 +3,8 @@ package com.example.alienfamily.service;
 import com.example.alienfamily.alien.Alien;
 import com.example.alienfamily.alien.AlienType;
 import com.example.alienfamily.exception.AlienException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class AlienService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlienService.class);
 
     /**
      * List of Aliens in the Colony
@@ -35,6 +39,7 @@ public class AlienService {
      * @throws AlienException
      */
     public void startColony(String name, String birthPlanet) {
+        LOGGER.debug("Starting Colony...");
         Alien adam = Alien.initialise(name, AlienType.ALPHA, birthPlanet);
         alienColony = new ArrayList<>();
         alienColony.add(adam);
@@ -54,6 +59,7 @@ public class AlienService {
     public void addAlien(String parentName, String childName, AlienType type, String homePlanet) {
         checkColonyExists();
         if (parentName == null) {
+            LOGGER.error("Alien " + childName + " not added due to null parent.");
             // No parent specified, throw exception
             throw new AlienException("Please specify a parent for this alien.");
         }
@@ -61,11 +67,13 @@ public class AlienService {
                 .filter(alien -> alien.getName().equals(childName))
                 .collect(Collectors.toList()).size() > 0) {
             // Alien must be unique
+            LOGGER.error("Alien " + childName + " already exists.");
             throw new AlienException("Alien " + childName + " already exists. Aliens must have unique names.");
         }
         boolean parentFound = false;
         for (Alien alien : alienColony) {
             if (alien.getName().equals(parentName)) {
+                LOGGER.debug("Parent alien " + parentName + " found for child " + childName);
                 // add child to parent
                 alien.addChild(childName, type, homePlanet);
                 // add child to colony - seems a weird way to do it, but the Alien constructor is private for a good reason
@@ -77,6 +85,7 @@ public class AlienService {
             }
         }
         if (!parentFound) {
+            LOGGER.error("Alien " + parentName + " does not exist");
             throw new AlienException("Alien " + parentName + " does not exist, Child not added.");
         }
     }
@@ -94,6 +103,7 @@ public class AlienService {
                 return alien.toString();
             }
         }
+        LOGGER.error("Get Alien call failed for " + name);
         throw new AlienException("Alien " + name + " not found");
     }
 
@@ -112,9 +122,11 @@ public class AlienService {
         for (Alien alien : alienColony) {
             if (alien.getName().equals(oldName)) {
                 if (newName != null) {
+                    LOGGER.debug("Name changing from " + oldName + " to " + newName);
                     alien.setName(newName);
                 }
                 if (newPlanet != null) {
+                    LOGGER.debug("Home planet of alien " + newName + " changing to " + newPlanet);
                     alien.setHomePlanet(newPlanet);
                 }
                 alienFound = true;
@@ -122,6 +134,7 @@ public class AlienService {
             }
         }
         if (!alienFound) {
+            LOGGER.error("Update alien call failed as alien does not exist: " + oldName);
             throw new AlienException("Alien " + oldName + " not updated as they do not exist");
         }
     }
@@ -142,6 +155,7 @@ public class AlienService {
                 .collect(Collectors.toList());
 
         if (newAlienColony.size() == oldSize) {
+            LOGGER.error("Delete call failed, alien does not exist: " + name);
             throw new AlienException("Alien " + name + " not removed as it does not exist.");
         }
 
@@ -150,6 +164,7 @@ public class AlienService {
                 .filter(alien -> alien.getName().equals(name) && alien.getParent() == null)
                 .collect(Collectors.toList());
         if (adam.size() > 0) {
+            LOGGER.debug("Removing Adam alien: " + name);
             alienColony.removeAll(adam);
             return;
         }
@@ -175,6 +190,7 @@ public class AlienService {
      */
     private void checkColonyExists() {
         if (alienColony == null || alienColony.isEmpty()) {
+            LOGGER.error("Colony not started");
             throw new AlienException("No aliens! Please start a new colony.");
         }
     }
