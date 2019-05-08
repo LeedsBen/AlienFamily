@@ -63,11 +63,11 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Spring boot maven plugin to ensure app starts
+            <!-- Spring boot maven plugin to ensure app starts -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 
