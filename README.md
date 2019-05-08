@@ -3,11 +3,13 @@
 This application models an Alien Colony.
 
 An Alien has the following features:
+
 Business rules:
  - A name no longer than 50 characters (mandatory)
  - A type of either ALPHA, BETA or GAMMA (mandatory)
  - A home planet (max 50 chars)
  - Alpha aliens can have up to two children in their lifetime
+
 Technical constraints / common sense rules:
  - An alien must have a unique name (future enhancement: introduce UUIDs so aliens can share names)
  - Aliens cannot simply be created, all aliens must be a child of an existing parent
