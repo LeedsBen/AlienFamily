@@ -21,3 +21,7 @@ A service is exposed in order to support basic CRUD operations on a colony
  - An alien's name and home planet can be updated
  - Aliens can be deleted from the colony. If an alien is deleted, its reference from its parent is also deleted, but any children retain a record of them
  - Data about an alien can be retrieved passing in its name as a reference
+
+The application is a Spring Boot application. It can be started by checking it out, running 'mvn clean install' and then 'java -jar target/alien-family-1.0-SNAPSHOT.jar'.
+
+See JavaDoc for more detail.
