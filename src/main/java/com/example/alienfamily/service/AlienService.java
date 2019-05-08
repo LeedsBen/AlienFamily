@@ -118,9 +118,9 @@ public class AlienService {
                 alienFound = true;
                 break;
             }
-            if (!alienFound) {
-                throw new AlienException("Alien " + oldName + " not updated as they do not exist");
-            }
+        }
+        if (!alienFound) {
+            throw new AlienException("Alien " + oldName + " not updated as they do not exist");
         }
     }
 
@@ -133,15 +133,36 @@ public class AlienService {
      */
     public void deleteAlien(String name) {
         checkColonyExists();
+        // Check alien exists & remove if it does
+        int oldSize = alienColony.size();
+        List<Alien> newAlienColony = alienColony.stream()
+                .filter(alien -> !alien.getName().equals(name))
+                .collect(Collectors.toList());
+
+        if (newAlienColony.size() == oldSize) {
+            throw new AlienException("Alien " + name + " not removed as it does not exist.");
+        }
+
+        // Check to see if this is 'Adam' (first) alien, if it is, no need to remove it s a child
+        List<Alien> adam = alienColony.stream()
+                .filter(alien -> alien.getName().equals(name) && alien.getParent() == null)
+                .collect(Collectors.toList());
+        if (adam.size() > 0) {
+            alienColony.removeAll(adam);
+            return;
+        }
+
+
         // Traverse the colony and find the parent
         alienColony.stream()
-                .map(alien -> alien.getChildren().stream()
-                            .filter(child -> child.getName().equals(name))
-                            .collect(Collectors.toList()))
-                // delete the child from the parent
-                .forEach(alien -> deleteAlien(name));
+                .filter(alien -> alien.hasChild(name))
+                .reduce((a, b) -> {
+                    throw new IllegalStateException("This alien exists multiple times!");
+                })
+                .get()
+                .removeChild(name);
 
-        // remove the alien from the colony
+        // Remove the alien
         alienColony = alienColony.stream()
                 .filter(alien -> !alien.getName().equals(name))
                 .collect(Collectors.toList());

@@ -204,6 +204,19 @@ public class Alien {
         }
     }
 
+    /**
+     * Simple method to check if this alien has the given child.
+     *
+     * @param childName
+     * @return
+     */
+    public boolean hasChild(String childName) {
+        if (childName == null) return false;
+        if (childOne != null && (childOne.getName().equals(childName))) return true;
+        if (childTwo != null && (childTwo.getName().equals(childName))) return true;
+        return false;
+    }
+
 
     /**
      * Basic toString method to print out alien details
@@ -215,6 +228,9 @@ public class Alien {
                 "\tName: " + name + "\n" +
                 "\tType: " + type + "\n" +
                 "\tHome: " + homePlanet + "\n";
+        if (parent != null) {
+            alien += "\tParent: " + parent.getName() + "\n";
+        }
         if (childOne != null) {
             alien += "\tChild1: " + childOne.getName() + "\n";
         }
