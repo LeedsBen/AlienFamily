@@ -48,6 +48,8 @@ public class AlienTest {
         });
     }
 
+
+
     /**
      * Test to check name can't be over 50 characters
      */
@@ -154,6 +156,31 @@ public class AlienTest {
             adam.removeKids();
             List<Alien> adamsKidsAfterRemoval = adam.getChildren();
             assertEquals(0, adamsKidsAfterRemoval.size());
+            adam.addChild("Proxigord", AlienType.BETA, "Persei");
+        });
+        assertEquals("Alien Adam has already had two children", ace.getMessage());
+    }
+
+    /**
+     * Test for trying to add more kids after some have been removed
+     */
+    @Test
+    public void addAndRemoveKidsTest() {
+        AlienException ace = assertThrows(AlienException.class, () -> {
+            Alien adam = Alien.initialise("Adam", AlienType.ALPHA, "Omicron");
+            adam.addChild("Vexorg", AlienType.ALPHA, "Omicron");
+            List<Alien> adamsKids = adam.getChildren();
+            assertEquals(1, adamsKids.size());
+            assertAlien(adamsKids.get(0), "Vexorg", AlienType.ALPHA, "Omicron");
+            adam.removeChild("Vexorg");
+            adamsKids = adam.getChildren();
+            assertEquals(0, adamsKids.size());
+            adam.addChild("Braxtarg", AlienType.GAMMA, "Persei");
+            adamsKids = adam.getChildren();
+            assertEquals(1, adamsKids.size());
+            assertAlien(adamsKids.get(0), "Braxtarg", AlienType.GAMMA, "Persei");
+
+            // Should throw exception as, although Adam currently has one child, he has had two
             adam.addChild("Proxigord", AlienType.BETA, "Persei");
         });
         assertEquals("Alien Adam has already had two children", ace.getMessage());

@@ -8,7 +8,8 @@ import java.util.List;
 /**
  * Object class to represent an alien being.
  *
- * An instance of this class is one alien
+ * An instance of this class is one alien, including its children.
+ *
  */
 public class Alien {
 
@@ -85,12 +86,18 @@ public class Alien {
      * @param type
      * @param homePlanet
      */
-    private Alien(String name, AlienType type, String homePlanet) throws AlienException{
+    private Alien(String name, AlienType type, String homePlanet) throws AlienException {
+        if (name == null || type == null) {
+            throw new AlienException("Aliens must have a name and a type");
+        }
         checkLength(name);
-        checkLength(homePlanet);
+        // Don't set if home planet is null
+        if (homePlanet != null) {
+            checkLength(homePlanet);
+            this.homePlanet = homePlanet;
+        }
         this.name = name;
         this.type = type;
-        this.homePlanet = homePlanet;
     }
 
     public String getName() {
@@ -110,7 +117,7 @@ public class Alien {
         return homePlanet;
     }
 
-    public void setHomePlanet(String homePlanet) throws AlienException {
+    public void setHomePlanet(String homePlanet) {
         checkLength(homePlanet);
         this.homePlanet = homePlanet;
     }
@@ -119,8 +126,7 @@ public class Alien {
         return parent;
     }
 
-    // Private for immutability
-    private void setParent(Alien parent) {
+    public void setParent(Alien parent) {
         this.parent = parent;
     }
 
@@ -132,7 +138,7 @@ public class Alien {
      * @return
      * @throws AlienException - if this alien is not an alpha
      */
-    public List<Alien> getChildren() throws AlienException {
+    public List<Alien> getChildren() {
         if (!AlienType.ALPHA.equals(this.type)) {
             throw new AlienException("Only alphas have children");
         }
@@ -160,7 +166,7 @@ public class Alien {
      * @param homePlanet
      * @throws AlienException
      */
-    public void addChild(String name, AlienType type, String homePlanet) throws AlienException {
+    public void addChild(String name, AlienType type, String homePlanet) {
         if (!AlienType.ALPHA.equals(this.type)) {
             // Not an alpha, can't have children
             throw new AlienException("Only Alpha aliens can reproduce. " + this.name + " is of type " + this.type);
@@ -183,6 +189,42 @@ public class Alien {
     }
 
     /**
+     * Method to remove children by name.
+     *
+     * Removes them by setting them to null
+     *
+     * @param childName
+     */
+    public void removeChild(String childName) {
+        if (childOne != null && childOne.getName().equals(childName)) {
+            childOne = null;
+        }
+        if (childTwo != null && childTwo.getName().equals(childName)) {
+            childTwo = null;
+        }
+    }
+
+
+    /**
+     * Basic toString method to print out alien details
+     *
+     * @return
+     */
+    public String toString() {
+        String alien = "Details of Alien: \n" +
+                "\tName: " + name + "\n" +
+                "\tType: " + type + "\n" +
+                "\tHome: " + homePlanet + "\n";
+        if (childOne != null) {
+            alien += "\tChild1: " + childOne.getName() + "\n";
+        }
+        if (childTwo != null) {
+            alien += "\tChild2: " + childTwo.getName() + "\n";
+        }
+        return alien;
+    }
+
+    /**
      * Simple method to check length.
      *
      * Actually less code than using javax.validation.constraints
@@ -191,7 +233,7 @@ public class Alien {
      * @return
      * @throws AlienException
      */
-    private void checkLength(String string) throws AlienException {
+    private void checkLength(String string) {
         if (string.length() > 50) {
             throw new AlienException("Name and home planet cannot be over 50 characters");
         }
