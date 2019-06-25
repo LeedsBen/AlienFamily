@@ -8,7 +8,7 @@ Business rules:
  - A name no longer than 50 characters (mandatory)
  - A type of either ALPHA, BETA or GAMMA (mandatory)
  - A home planet (max 50 chars)
- - Alpha aliens can have up to two children in their lifetime
+ - Alpha aliens can have up to two children in their lifetime. Beta & Gamma aliens cannot reproduce.
 
 Technical constraints / common sense rules:
  - An alien must have a unique name (future enhancement: introduce UUIDs so aliens can share names)
